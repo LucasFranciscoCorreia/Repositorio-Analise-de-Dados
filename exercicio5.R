@@ -40,10 +40,45 @@ mean(list$Solar.R, na.rm = T)
 # Qual a quantidade de casos completos no dataset airquality ? Ou seja, a 
 # quantidade de observação (linhas) sem NAs.
 
+list <- airquality[complete.cases(airquality),]
 
+# Carregue o arquivo genomes.csv numa variável chamada genomas através do 
+# seguinte comando: 
+# genomas <- as.data.frame(read.csv("https://www.dropbox.com/s/vgh6qk395ck86fp/genomes.csv?dl=1")).
+# De posse desse dado, responda as perguntas abaixo.
 
+genomas <- as.data.frame(read.csv("https://www.dropbox.com/s/vgh6qk395ck86fp/genomes.csv?dl=1"))
 
+# Selecione os organismos com mais de 40 cromossomos.
 
+genomas$Organism[genomas$Chromosomes > 40]
 
+#Selecione os organismos que contém plasmídeos e também possui mais de um cromossomo.
 
+list <- genomas[genomas$Plasmids > 0 & genomas$Chromosomes > 1,]
+
+# Quantos grupos diferentes existem?
+
+factors <- factor(genomas$Groups)
+
+# Carregue o arquivo cancer_stats.csv numa variável chamada cancer_stats através do 
+# seguinte comando: 
+# cancer_stats <- as.data.frame(read.csv("https://www.dropbox.com/s/g97bsxeuu0tajkj/cancer_stats.csv?dl=1")). 
+# De posse desse dado, responda as perguntas abaixo.
+
+cancer_stats <- as.data.frame(read.csv("https://www.dropbox.com/s/g97bsxeuu0tajkj/cancer_stats.csv?dl=1"))
+
+# Para qual local do câncer (site) do sistema digestivo (Digestive System) existem
+# mais casos femininos do que masculinos?
+
+cancer_stats$Site[cancer_stats$Female.Cases>cancer_stats$Male.Cases]
+
+# Qual local do câncer tem a melhor taxa de sobrevivência para os homens?
+
+cancer_stats[cancer_stats$Male.Deaths/cancer_stats$Male.Cases==min(cancer_stats$Male.Deaths/cancer_stats$Male.Cases,na.rm = T),1]
+
+      
+# Qual local de câncer tem a pior taxa de sobrevivência para as mulheres?
+
+cancer_stats[cancer_stats$Female.Deaths/cancer_stats$Female.Cases==max(cancer_stats$Female.Deaths/cancer_stats$Female.Cases,na.rm = T),]
 
