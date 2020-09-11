@@ -164,7 +164,6 @@ aux<- read.delim("https://www.dropbox.com/s/4yr2woj8r1p5sbn/gapminderDataFiveYea
 # Abaixo, digite a expressão regular.
 
 grep(pattern="e{2}", aux$country, value = T)
-grep(pattern="(^|[^e])e{2}([^2]|$)", aux$country, value = T)
 
 # Encontre os nomes de países que: (i) começam com “Ba”; (ii) terminam com “land”; e (iii) 
 # tenham uma palavra no nome que começa com “Ga” (dica: veja \b[153] "West Bank and Gaza" ). Após isso, submeta o total
