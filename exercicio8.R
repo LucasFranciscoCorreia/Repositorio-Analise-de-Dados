@@ -168,4 +168,4 @@ grep(pattern="e{2}", aux$country, value = T)
 # Encontre os nomes de países que: (i) começam com “Ba”; (ii) terminam com “land”; e (iii) 
 # tenham uma palavra no nome que começa com “Ga” (dica: veja \b[153] "West Bank and Gaza" ). Após isso, submeta o total
 # de países encontrados para os itens anteriores. Note que apenas um único número é submetido.
-grep(pattern="((^Ba)|(land$)|(Ga.))",aux$country,value=T)
+unique(grep(pattern="((^Ba)|(land$)|(Ga.))",aux$country,value=T))
