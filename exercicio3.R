@@ -35,6 +35,7 @@ suspensao.n <- (suspensao - mean(suspensao))/sd(suspensao)
 correr.n <- (correr - mean(correr))/sd(correr)
 conhecimento.n <- (conhecimento - mean(conhecimento))/sd(conhecimento)
 
+conhecimento.n + correr.n  +suspensao.n + salto.n  + abdominais.n 
 # Para responder as questões abaixo, faça download do arquivo disponível em 
 # https://www.dropbox.com/s/6t7b44acy7yfczu/vetor.RData?dl=1 e mova-o para o 
 # seu diretório. Em seguida leia-o com o comando load(“vetor.RData”) . O vetor01 

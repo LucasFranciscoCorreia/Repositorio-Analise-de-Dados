@@ -34,6 +34,7 @@ mutate(df, tendencia = Time-mean(Time))
 
 # Qual comando apresenta a maior concentração de teofilina ? Não use nenhum nome para a coluna resultante
 select(filter(df, conc==max(conc)), conc)
+df %>% select(df%>%filter(conc==max(conc)),conc)
 
 # Para os exercícios abaixo, usaremos dois conjuntos de dados relacionados aos tempos de atraso de vôos do Bureau of 
 # Transportation Statistics dos EUA (X673598238_T_ONTIME_REPORTING e L_UNIQUE_CARRIERS.csv_). Para carregar os dados 

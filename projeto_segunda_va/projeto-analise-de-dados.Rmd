@@ -1,0 +1,251 @@
+---
+title: "Projeto Analise de Dados"
+author: "Lucas Correia"
+date: "17/10/2020"
+bibliography: references.bib
+output: rmdformats::material
+highlight: kate
+df_print: paged
+css: style.css
+cls: template.csl
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r import_packages, message=FALSE, warning=FALSE, include=FALSE}
+list.of.packages <- c('ggplot2', "lubridate")
+lapply(list.of.packages, require, character.only = TRUE)
+options(knitr.table.format = "html")
+#install.packages(list.of.packages)
+library('ggplot2')
+library('lubridate')
+```
+
+# Introdução {.tabset}
+
+No-Show é uma expressão em ingles para pessoas que faltam a consultas medicas marcadas por qualquer razão. Fatores como idade, genero, distancia, tempo, salario, clima, esquecer/mudar o dia da consulta, problemas fisicos/psicologicos, tempo de espera para a consulta, etc., podem fazer com que o paciente não compareça a consulta no dia e horario marcado.
+
+As consequencias da falta do paciente a consulta envolvem, mas nao se resume a: Pior tratamento do paciente, ineficiencia dos equipamentos e aumentar o tempo de espera de outros pacientes. Nos Estados Unidos, cerca de 62 consultas são perdidas por dia em hospitais comunitarios, o que acarreta em um prejuizo de 3 milhões de dolares ao ano.
+
+Utilizando a base de dados do Kaggle, é possivel estudar as informações, verificar os motivos que levaram a falta do paciente e prever se o paciente irá faltar ou comparecer a consulta, permitindo os hospitais a preparar melhor seus agendamentos para os pacientes, diminuindo o tempo de espera da consulta.
+
+# Pacotes Requeridos {.tabset}
+
+# Preparação dos Dados {.tabset}
+
+## Resumo
+
+```{r datas, include=F}
+noshow = read.csv("KaggleV2-May-2016.csv")
+```
+
+Os dados a serem utilizados estão disponiveis no Kaggle ([Link](https://www.kaggle.com/joniarroba/noshowappointments)), cujo proposito é tentar conseguir realizar previsão do paciente a consulta. Os dados possuem `r nrow(noshow)` consultas marcadas entre os periodos de novembro de 2015 a junho de 2016 para serem realizadas entre o fim de abril de 2016 ao inicio de junho de 2016. Esse dataset possui um total de `r ncol(noshow)` caracteristicas.
+
+```{r summary, message=FALSE, warning=FALSE, echo=F}
+str(noshow)
+```
+
+
+## Caracteristicas {.tabset}
+
+### PatientId
+
+A caracteristica *PatientId* é um identificador para o paciente da consulta. É o que permite saber se o paciente foi a mais de uma consulta no periodo de tempo.
+
+```{r patientid, echo=F, message=FALSE, warning=FALSE}
+ggplot(noshow) + 
+  geom_histogram(aes(x=PatientId)) +
+  xlab("PatientId") +
+  ylab("Quantidade") +
+  scale_x_discrete(breaks = seq(min(noshow$PatientId), max(noshow$PatientId), by = 1000000))
+```
+
+### AppointmentID
+
+A caracteristica *AppointmentID* é um identificador da consulta. Ela é unica, não representando nada mais que se duas consultas são a mesma consulta.
+
+### Gender
+
+A caracteristica *Gender* representa o genero do paciente, se ele é do tipo masculino ou feminino.
+
+```{r gender, echo=F, message=FALSE, warning=FALSE}
+  ggplot(noshow)+
+    geom_histogram(aes(x=as.factor(Gender)),stat="count") +
+    xlab("Gender") + 
+    ylab("Quantidade")
+
+```
+
+### ScheduledDay
+
+A caracteristica *ScheduledDay* representa a data ao qual a consulta foi marcada.
+
+```{r scheduledday, message=FALSE, warning=FALSE, echo=F}
+  noshow$ScheduledDay <- as_date(noshow$ScheduledDay)
+  ggplot(noshow)+
+    geom_histogram(aes(x=ScheduledDay),stat="count") +
+    xlab("ScheduledDay") + 
+    ylab("Quantidade") +
+    scale_x_date(labels = scales::date_format("%d-%m-%Y"))
+```
+
+
+### AppointmentDay
+
+A caracteristica *AppointmentDay* representa a data que será realizada a consulta do paciente.
+
+```{r message=FALSE, warning=FALSE, echo=FALSE}
+  noshow$AppointmentDay <- as_date(noshow$AppointmentDay)
+  ggplot(noshow)+
+    geom_histogram(aes(x=AppointmentDay),stat="count") +
+    xlab("AppointmentDay") + 
+    ylab("Quantidade")+
+    scale_x_date(labels = scales::date_format("%d-%m-%Y"))
+    
+```
+
+
+### Age
+
+A caracteristica *Age* representa a idade do paciente.
+
+```{r message=FALSE, warning=FALSE, echo=FALSE}
+  ggplot(noshow)+
+    geom_histogram(aes(x=Age),stat="count") +
+    xlab("AppointmentDay") + 
+    ylab("Quantidade")
+  str(noshow$age)
+```
+
+
+### Neighbourhood
+
+A caracteristica *Neighbourhood* representa o bairro ao qual a consulta será realizada.
+
+```{r message=FALSE, warning=FALSE, echo=FALSE}
+  ggplot(noshow)+
+    geom_histogram(aes(x=as.factor(Neighbourhood)),stat="count") +
+    xlab("Neighbourhood") + 
+    ylab("Quantidade")
+```
+
+
+### Scholarship
+
+A caracteristica *Scholarship* representa se o paciente recebe algum tipo de bolsa/auxilio.
+
+```{r message=FALSE, warning=FALSE, echo=FALSE}
+  ggplot(noshow)+
+    geom_histogram(aes(x=as.factor(Scholarship)),stat="count") +
+    xlab("Scholarship") + 
+    ylab("Quantidade")
+```
+
+
+
+### Hipertension
+
+A caracteristica *Hipertension* representa se o paciente possui hipertensão.
+
+```{r message=FALSE, warning=FALSE, echo=FALSE}
+  ggplot(noshow)+
+    geom_histogram(aes(x=as.factor(Hipertension)),stat="count") +
+    xlab("Hipertension") + 
+    ylab("Quantidade")
+```
+
+
+### Diabetes
+
+A caracteistica *Diabetes* representa se o paciente possui diabetes.
+
+```{r message=FALSE, warning=FALSE, echo=FALSE}
+  ggplot(noshow)+
+    geom_histogram(aes(x=as.factor(Diabetes)),stat="count") +
+    xlab("Diabetes") + 
+    ylab("Quantidade")
+```
+
+
+### Alcoholism
+
+A caracteristica *Alcoholism* representa se o paciente é alcolatra.
+
+```{r message=FALSE, warning=FALSE, echo=FALSE}
+  ggplot(noshow)+
+    geom_histogram(aes(x=as.factor(Alcoholism)),stat="count") +
+    xlab("Alcoholism") + 
+    ylab("Quantidade")
+```
+
+
+### Handcap
+
+A caracteristica *handcap* representa se o paciente possui algum tipo de deficiencia.
+
+```{r message=FALSE, warning=FALSE, echo=FALSE}
+  ggplot(noshow)+
+    geom_histogram(aes(x=as.factor(Handcap)),stat="count") +
+    xlab("Handcap") + 
+    ylab("Quantidade")
+```
+
+
+### SMS_received 
+
+A caracteristica *SMS_receibed* representa se o paciente recebeu alguma mensagem lembrando da consulta.
+
+```{r message=FALSE, warning=FALSE, echo=FALSE}
+  ggplot(noshow)+
+    geom_histogram(aes(x=as.factor(SMS_received)),stat="count") +
+    xlab("SMS_received") + 
+    ylab("Quantidade")
+```
+
+### No.show
+
+A caracteristica *No.show* representa se o paciente foi ou não a consulta marcada.
+
+```{r message=FALSE, warning=FALSE, echo=FALSE}
+  ggplot(noshow)+
+    geom_histogram(aes(x=as.factor(No.show)),stat="count") +
+    xlab("No.show") + 
+    ylab("Quantidade")
+```
+
+
+
+
+# Analise Exploratoria dos Dados {.tabset}
+
+# Conclusões {.tabset}
+
+# Formatação e Outros Requisitos {.tabset}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

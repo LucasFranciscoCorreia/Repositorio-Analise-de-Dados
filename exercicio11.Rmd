@@ -1,0 +1,101 @@
+---
+title: "Exercicio11_analise_dados"
+author: "Lucas Correia"
+date: "01/10/2020"
+output: html_document
+bibliography: biblioteca.bib
+---
+
+# Crie um relatório no R Markdown com os seguintes itens:
+
+Nuvem de palavra do discurso “Eu tenho um sonho” de Martin Luther King Jr. Também plote as palavras mais frequentes
+
+```{r questao1, message=FALSE, warning=FALSE}
+library(tm)
+library(wordcloud)
+library(readr)
+
+discurso <- read_file("discurso.txt")
+
+VS <- VectorSource(discurso)
+corpus <- Corpus(VS)
+
+corpus <- tm_map(corpus, content_transformer(tolower))
+
+corpus <- tm_map(corpus, removePunctuation)
+
+corpus <- tm_map(corpus, removeNumbers)
+
+corpus <- tm_map(corpus, removeWords, stopwords("english"))
+
+wordcloud(corpus, min.freq = 1, max.words = 60, random.order = F, rot.per = 0.35, colors = brewer.pal(8, "Dark2"))
+```
+
+Nuvem de palavra a partir dos twitters sobre Black Live Matters. Também faça uma análise de sentimentos com relação a esses twitters coletados.
+
+```{r questao2, include=F}
+library("tm")
+library("wordcloud")
+library("RColorBrewer")
+library("twitteR")
+library("syuzhet")
+apikey <- 'UpOQfaKGljItYf17xQuxkMJEX'
+apiskey <- '7zabRAft2gDU5y3NOD8De4mks3lWaVtGgmNA7cJmJp0qFEIzTU'
+bearertoken <- 'AAAAAAAAAAAAAAAAAAAAANjsIAEAAAAAdJ5Lrq7JHcFsEeXN2PIuWtbjlV8%3DypxTXD0UmcMmxPqRdulrQT50KtXCu1zKe4MTDdmgdI4AlznzxT'
+accesstoken <- '1295478546056515584-pJI36YLsmkfXYkNs9uoqlbm68mkSeK'
+accesssecrecttoken <- '0FCheGO5rzOgQniQ6wflgWH4OUoaG1QHCHWBDjJ2JsnM0'
+
+```
+
+```{r questao2-2, message=FALSE, warning=FALSE}
+setup_twitter_oauth(apikey, apiskey, accesstoken, accesssecrecttoken)
+
+tweets <- searchTwitter("#blacklivesmatter", n=500, lang="pt")
+
+tweets <- twListToDF(tweets)
+
+tweets_t <- paste(tweets$text, collpase=" ")
+
+tweets_S <- VectorSource(tweets_t)
+corpus <- Corpus(tweets_S)
+
+corpus <- tm_map(corpus, tolower)
+corpus <- tm_map(corpus,removePunctuation)
+corpus <- tm_map(corpus, stripWhitespace)
+corpus <- tm_map(corpus, removeWords, stopwords('portuguese'))
+
+removeURL <- function(x) gsub("http[^[:space:]]*", "", x)
+corpus <- tm_map(corpus, removeURL)
+
+wordcloud(corpus, min.freq = 3, max.words = Inf, random.order = F, rot.per = 0.15,
+          colors = brewer.pal(8, "Dark2"), scale=c(8,.2))
+
+s <- get_nrc_sentiment(tweets_t)
+
+barplot(colSums(s), las=2, col=rainbow(10), ylab="Contagem", main="Sentimentos com relação ao BlackLivesMatter")
+```
+
+5 equações complexas usando Latex.
+
+$$f(k) = {n \choose k} p^{k} (1-p)^{n-k}$$
+$$\left(\int_{0}^{\pi} sin(x) \; dx\right)$$
+$$\sum_{x = 1}^{n} x \ = \frac{n*(n-2)}{2}$$
+$$\lim_{x \to 2} \frac{x^{2}-4}{x-2}$$
+$$\log_{x}{y} \ = \frac{\log_{10}{y}}{\log_{10}x}$$
+
+
+2 Figuras relacionadas a ciência de dados e 2 tabelas (dica:  use datatable() do pacote DT).
+![Figura 1](fig1.jpg)
+![Figura 2](fig2.jpg)
+```{r questao 4, message=FALSE, warning=FALSE}
+library("DT")  
+datatable(iris)
+datatable(airquality)
+```
+
+5 referências usando o BibTex.
+@wandell1997foundations
+@jain1995machine
+@forsyth2002computer
+@horn1986robot
+@zeki1993vision
